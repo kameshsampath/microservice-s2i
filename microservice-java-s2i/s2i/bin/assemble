@@ -1,0 +1,42 @@
+#!/bin/bash -e
+
+if [[ "$1" == "-h" ]]; then
+  # If the 'msa-s2i' assemble script is executed with '-h' flag,
+  # print the usage.
+  exec /app/s2i/usage
+fi
+
+# restore maven dependencies downloaded in a previous build,
+# so they do not have to be downloaded again.
+# /opt/s2i/destination/artifacts will only be present in the incremental build scenario
+# in which the target image name is an existing docker image which contains
+# dependencies from a prior build execution.
+function restore_saved_artifacts() {
+  if [ "$(ls -A /opt/s2i/destination/artifacts/ 2>/dev/null)" ]; then
+    echo -n "Restoring saved artifacts from prior build..."
+    mv /opt/s2i/destination/artifacts/.m2/repository $HOME/.m2
+  fi
+}
+
+
+LOCAL_SOURCE_DIR=${HOME}
+
+mkdir -p $LOCAL_SOURCE_DIR
+
+ARTIFACT_DIR=${ARTIFACT_DIR:-target}
+
+cp -Rf /opt/s2i/destination/src/. $LOCAL_SOURCE_DIR
+chgrp -R 0 $LOCAL_SOURCE_DIR
+chmod -R g+rw $LOCAL_SOURCE_DIR
+
+if [ -f "$LOCAL_SOURCE_DIR/pom.xml" ]; then
+  restore_saved_artifacts
+  echo "Building executable jar for ${artifactId} ...."
+  mvn clean install
+  echo "... done"
+  if [ -f "${ARTIFACT_DIR}/${artifactId}.jar" ]; then
+    echo "Copying service fat jar ${artifactId}.jar to ${JAVA_APP} dir "
+    cp -a "${ARTIFACT_DIR}/${artifactId}.jar" /app/
+    chmod +x "/app/${artifactId}.jar"
+  fi
+fi
