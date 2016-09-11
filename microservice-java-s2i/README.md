@@ -16,7 +16,7 @@ This base builder image could be used to build the java based microservices usin
 
 # Environment Variables
 
-* __artifactId__ - if you have many *.application within the sources, this variable will be used to determine which Application to deploy and build the container image for
+* __artifactId__ - The maven build `finalName` which will be used to generate the fat jar
 
 # Usage 
 Lets take an example of making the [Simple Calcuator Microservice](https://github.com/kameshsampath/microservice-demos/simple-calculator) as docker image.  To build the Docker image we need to execute the following `s2i` command 
