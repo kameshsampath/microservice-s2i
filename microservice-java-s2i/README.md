@@ -16,10 +16,14 @@ This base builder image could be used to build the java based microservices usin
 
 # Environment Variables
 
-* __artifactId__ - The maven build `finalName` which will be used to generate the fat jar
+* __artifactId__ - The maven build `finalName` which will be used to generate the fat jar,
+e.g when lets say my maven build `finalName` is `simple-calculator`, for spring boot based
+application can have the __artifactId__ as `finalName`, but when using wildfly swarm the 
+_artifactId__ will be like `finalName-swarm` as the wildfly swarm maven plugin suffixes the
+wildfly swarm fat jar with `-swarm`
 
 # Usage 
-Lets take an example of making the [Simple Calcuator Microservice](https://github.com/kameshsampath/microservice-demos/simple-calculator) as docker image.  To build the Docker image we need to execute the following `s2i` command 
+Lets take an example of making the [Simple Calcuator Microservice](https://github.com/kameshsampath/microservice-demos/wildfly-swarm/simple-calculator) as docker image.  To build the Docker image we need to execute the following `s2i` command 
 `s2i build https://github.com/kameshsampath/microservice-demos/simple-calculator -e "artifactId=simple-calculator" kameshsampath/microservice-java-s2i msa-simplecalc-app`
 
 The above command will pull the sources from the Git Repo https://github.com/kameshsampath/microservice-demos/simple-calculator and build the code inside the builder image __kameshsampath/microservice-java-s2i__ and produces a springboot microservice example application by name __msa-simplecalc-app__

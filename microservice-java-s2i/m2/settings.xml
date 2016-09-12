@@ -189,6 +189,8 @@
 
   </profiles>
   <activeProfiles>
+    <activeProfile>jboss-eap-repository</activeProfile>
+    <activeProfile>jboss-community-repository</activeProfile>
     <activeProfile>securecentral</activeProfile>
   </activeProfiles>
 </settings>
